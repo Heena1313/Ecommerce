@@ -27,6 +27,7 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/payments', require('./routes/paymentRoutes'));
 app.use('/api/coupons', require('./routes/couponRoutes'));
 app.use('/api/tracking', require('./routes/trackingRoutes'));
+app.use('/api/vendors', require('./routes/vendors'));
 
 // Fallback to index.html for SPA-like navigation, with 404 for missing API endpoints
 app.use((req, res) => {
