@@ -4,7 +4,7 @@ const path = require('path');
 require('dotenv').config();
 
 // Initialize database
-require('./db');
+require('./config/mongo');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
