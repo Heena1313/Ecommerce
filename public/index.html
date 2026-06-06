@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ApexMarket - Premium E-Commerce Platform</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Vanilla CSS Stylesheet -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="dark-theme">
+
+  <!-- Notification Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Header Navigation -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo-area" onclick="app.navigateTo('browse')">
+        <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
+        <span class="logo-text">Apex<span>Market</span></span>
+      </div>
+
+      <!-- Live Product Search (visible on customer/guest browse views) -->
+      <div class="search-bar-container" id="global-search-container">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="global-search-input" placeholder="Search premium products, brands, stores..." oninput="customer.handleSearch(event)">
+      </div>
+
+      <!-- Navigation Links (Dynamic) -->
+      <nav class="nav-links">
+        <!-- Guest/Customer Links -->
+        <div id="nav-customer" class="nav-group">
+          <a href="#" class="nav-link active" onclick="app.navigateTo('browse')"><i class="fa-solid fa-store"></i> Shop</a>
+          <a href="#" class="nav-link" id="nav-customer-orders" onclick="app.navigateTo('customer-orders')" style="display: none;"><i class="fa-solid fa-box"></i> My Orders</a>
+        </div>
+
+        <!-- Vendor Links -->
+        <div id="nav-vendor" class="nav-group" style="display: none;">
+          <a href="#" class="nav-link" onclick="app.navigateTo('vendor-dashboard')"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+          <a href="#" class="nav-link" onclick="app.navigateTo('vendor-store')"><i class="fa-solid fa-shop"></i> My Store</a>
+          <a href="#" class="nav-link" onclick="app.navigateTo('vendor-inventory')"><i class="fa-solid fa-boxes-stacked"></i> Inventory</a>
+          <a href="#" class="nav-link" onclick="app.navigateTo('vendor-orders')"><i class="fa-solid fa-receipt"></i> Orders</a>
+        </div>
+
+        <!-- Admin Links -->
+        <div id="nav-admin" class="nav-group" style="display: none;">
+          <a href="#" class="nav-link" onclick="app.navigateTo('admin-dashboard')"><i class="fa-solid fa-sliders"></i> Admin Control</a>
+          <a href="#" class="nav-link" onclick="app.navigateTo('admin-vendors')"><i class="fa-solid fa-user-tie"></i> Manage Vendors</a>
+          <a href="#" class="nav-link" onclick="app.navigateTo('admin-customers')"><i class="fa-solid fa-users"></i> View Customers</a>
+        </div>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <!-- Theme Toggle -->
+        <button class="icon-btn" onclick="app.toggleTheme()" title="Toggle Theme">
+          <i class="fa-solid fa-circle-half-stroke"></i>
+        </button>
+
+        <!-- Customer Shopping Cart Icon -->
+        <button id="cart-toggle-btn" class="icon-btn cart-btn" onclick="app.toggleCartDrawer()">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-badge" id="cart-badge-count">0</span>
+        </button>
+
+        <!-- Profile / Auth Area -->
+        <div class="auth-buttons" id="auth-guest-area">
+          <button class="btn btn-secondary btn-sm" onclick="app.openModal('login-modal')">Log In</button>
+          <button class="btn btn-primary btn-sm" onclick="app.openModal('register-modal')">Sign Up</button>
+        </div>
+        <div class="profile-area" id="auth-user-area" style="display: none;">
+          <span class="welcome-user">Hi, <strong id="username-display">User</strong> <span class="role-tag" id="user-role-tag">Customer</span></span>
+          <button class="btn btn-danger btn-sm btn-icon-only" onclick="app.logout()" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="main-content">
+
+    <!-- View: Customer / Guest Browse -->
+    <section id="view-browse" class="app-view">
+      <!-- Hero Banner -->
+      <div class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <span class="hero-tag">Summer Collection 2026</span>
+          <h1 class="hero-title">Experience the Next Gen of Shopping</h1>
+          <p class="hero-description">Discover premium products curated from approved creators and stores globally. Swift shipping, authentic reviews, and 24/7 service.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary btn-lg" onclick="customer.scrollToProducts()">Shop Collection <i class="fa-solid fa-arrow-right"></i></button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="glowing-orb"></div>
+        </div>
+      </div>
+
+      <!-- Categories Selector -->
+      <div class="category-strip">
+        <button class="category-chip active" onclick="customer.filterByCategory('')">All Categories</button>
+        <button class="category-chip" onclick="customer.filterByCategory('Electronics')"><i class="fa-solid fa-laptop"></i> Electronics</button>
+        <button class="category-chip" onclick="customer.filterByCategory('Fashion')"><i class="fa-solid fa-shirt"></i> Fashion</button>
+        <button class="category-chip" onclick="customer.filterByCategory('Home & Living')"><i class="fa-solid fa-couch"></i> Home & Living</button>
+        <button class="category-chip" onclick="customer.filterByCategory('Fitness & Outdoors')"><i class="fa-solid fa-dumbbell"></i> Fitness & Outdoors</button>
+        <button class="category-chip" onclick="customer.filterByCategory('Beauty & Personal')"><i class="fa-solid fa-sparkles"></i> Beauty</button>
+      </div>
+
+      <!-- Catalog Header -->
+      <div class="section-header" id="catalog-anchor">
+        <div>
+          <h2 class="section-title">Explore Catalog</h2>
+          <p class="section-subtitle" id="catalog-subtitle">Showing all available products</p>
+        </div>
+        <!-- Extra filters if needed -->
+      </div>
+
+      <!-- Products Grid -->
+      <div class="products-grid" id="products-catalog-grid">
+        <!-- Products will load dynamically via customer.js -->
+        <div class="loader-container"><div class="spinner"></div></div>
+      </div>
+    </section>
+
+    <!-- View: Customer Orders -->
+    <section id="view-customer-orders" class="app-view" style="display: none;">
+      <div class="view-header">
+        <h1>My Order History</h1>
+        <p>Track your purchases, status, and share reviews</p>
+      </div>
+      <div id="customer-orders-container" class="orders-list-container">
+        <!-- Loaded dynamically -->
+      </div>
+    </section>
+
+    <!-- View: Vendor Dashboard -->
+    <section id="view-vendor-dashboard" class="app-view" style="display: none;">
+      <div class="view-header vendor-header-container">
+        <div>
+          <h1>Vendor Dashboard</h1>
+          <p>Analyze sales, metrics, and manage your incoming order pipeline.</p>
+        </div>
+        <div class="store-badge-large" id="vendor-store-badge">Nexus Store</div>
+      </div>
+
+      <div class="vendor-warning-banner" id="vendor-approval-warning" style="display: none;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>
+          <h3>Store Awaiting Admin Approval</h3>
+          <p>Your store details and products will not be visible to customers until an Administrator approves your vendor account.</p>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Total Revenue</span>
+            <span class="stat-value" id="vendor-stat-revenue">$0.00</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Orders Received</span>
+            <span class="stat-value" id="vendor-stat-orders">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-cubes"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Active Products</span>
+            <span class="stat-value" id="vendor-stat-products">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vendor Quick Actions -->
+      <div class="dashboard-split">
+        <div class="card">
+          <div class="card-header">
+            <h3>Recent Orders</h3>
+            <button class="btn btn-secondary btn-xs" onclick="app.navigateTo('vendor-orders')">View All</button>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Product</th>
+                  <th>Customer</th>
+                  <th>Qty</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="vendor-recent-orders-table">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- View: Vendor Store Settings -->
+    <section id="view-vendor-store" class="app-view" style="display: none;">
+      <div class="view-header">
+        <h1>My Store Settings</h1>
+        <p>Customize your unique store details, logo, and banner representation.</p>
+      </div>
+
+      <div class="card store-settings-card">
+        <form id="store-settings-form" onsubmit="vendor.saveStoreSettings(event)">
+          <div class="form-group">
+            <label for="store-name">Store Name *</label>
+            <input type="text" id="store-name" class="form-control" required placeholder="Enter store name">
+          </div>
+          <div class="form-group">
+            <label for="store-description">Store Description</label>
+            <textarea id="store-description" class="form-control" rows="4" placeholder="Describe what you sell..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="store-banner">Store Banner Image URL</label>
+            <input type="url" id="store-banner" class="form-control" placeholder="https://example.com/banner.jpg">
+            <span class="input-tip">Provide a direct image URL for the store banner.</span>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Store Settings</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- View: Vendor Inventory -->
+    <section id="view-vendor-inventory" class="app-view" style="display: none;">
+      <div class="view-header inventory-header">
+        <div>
+          <h1>Manage Inventory</h1>
+          <p>Add, edit, and keep track of your product catalog.</p>
+        </div>
+        <button class="btn btn-primary" onclick="vendor.openAddProductModal()"><i class="fa-solid fa-plus"></i> Add New Product</button>
+      </div>
+
+      <div class="card">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="vendor-products-table">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- View: Vendor Orders Management -->
+    <section id="view-vendor-orders" class="app-view" style="display: none;">
+      <div class="view-header">
+        <h1>Fulfill Incoming Orders</h1>
+        <p>Track status and update customers on their shipping process.</p>
+      </div>
+
+      <div class="card">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Product Name</th>
+                <th>Qty</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="vendor-all-orders-table">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- View: Admin Dashboard -->
+    <section id="view-admin-dashboard" class="app-view" style="display: none;">
+      <div class="view-header">
+        <h1>Administrator Controls</h1>
+        <p>Review metrics, manage vendor account approvals, and view customer stats.</p>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-user-tag"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Total Customers</span>
+            <span class="stat-value" id="admin-stat-customers">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-id-card-clip"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Total Vendors</span>
+            <span class="stat-value" id="admin-stat-vendors">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+          <div class="stat-info">
+            <span class="stat-label">Pending Approval</span>
+            <span class="stat-value" id="admin-stat-pending">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-split">
+        <!-- Vendor Approval Queue -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Vendor Approvals Needed</h3>
+          </div>
+          <div class="approval-cards-container" id="admin-approvals-queue">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- View: Admin Manage Vendors -->
+    <section id="view-admin-vendors" class="app-view" style="display: none;">
+      <div class="view-header">
+        <h1>Manage Vendor Profiles</h1>
+        <p>Suspend or activate vendor access controls.</p>
+      </div>
+
+      <div class="card">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Vendor ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Store Name</th>
+                <th>Inventory Count</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-vendors-table">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- View: Admin View Customers -->
+    <section id="view-admin-customers" class="app-view" style="display: none;">
+      <div class="view-header">
+        <h1>Customer Database</h1>
+        <p>Analyze registered buyers, purchases counts, and spending habits.</p>
+      </div>
+
+      <div class="card">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Customer ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Join Date</th>
+                <th>Orders Placed</th>
+                <th>Total Spent</th>
+              </tr>
+            </thead>
+            <tbody id="admin-customers-table">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Cart Drawer (Slides from right) -->
+  <div id="cart-drawer" class="cart-drawer">
+    <div class="cart-drawer-header">
+      <h2>Shopping Cart</h2>
+      <button class="icon-btn close-cart-btn" onclick="app.toggleCartDrawer()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="cart-items-container" id="cart-drawer-items">
+      <!-- Loaded Dynamically -->
+    </div>
+    <div class="cart-drawer-footer" id="cart-drawer-footer">
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cart-subtotal">$0.00</span>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="customer.openCheckoutModal()">Proceed to Checkout</button>
+    </div>
+  </div>
+  <div id="cart-overlay" class="cart-overlay" onclick="app.toggleCartDrawer()"></div>
+
+  <!-- MODAL: LOGIN -->
+  <div id="login-modal" class="modal-wrapper">
+    <div class="modal-backdrop" onclick="app.closeModal('login-modal')"></div>
+    <div class="modal-content card">
+      <div class="modal-header">
+        <h2>Welcome Back</h2>
+        <button class="close-modal-btn" onclick="app.closeModal('login-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="login-form" onsubmit="app.handleLogin(event)">
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="form-control" required placeholder="name@domain.com">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" class="form-control" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Log In</button>
+        <p class="modal-switch-text">Don't have an account? <a href="#" onclick="app.switchModal('login-modal', 'register-modal')">Register</a></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: REGISTER -->
+  <div id="register-modal" class="modal-wrapper">
+    <div class="modal-backdrop" onclick="app.closeModal('register-modal')"></div>
+    <div class="modal-content card">
+      <div class="modal-header">
+        <h2>Create Account</h2>
+        <button class="close-modal-btn" onclick="app.closeModal('register-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="register-form" onsubmit="app.handleRegister(event)">
+        <div class="form-group">
+          <label for="register-name">Full Name</label>
+          <input type="text" id="register-name" class="form-control" required placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label for="register-email">Email Address</label>
+          <input type="email" id="register-email" class="form-control" required placeholder="name@domain.com">
+        </div>
+        <div class="form-group">
+          <label for="register-password">Password</label>
+          <input type="password" id="register-password" class="form-control" required placeholder="Min 6 characters">
+        </div>
+        <div class="form-group">
+          <label>Select Role</label>
+          <div class="role-selector-group">
+            <label class="role-radio-label">
+              <input type="radio" name="register-role" value="customer" checked>
+              <div class="role-radio-box">
+                <i class="fa-solid fa-user"></i>
+                <span>Customer</span>
+                <small>Buy items, review products</small>
+              </div>
+            </label>
+            <label class="role-radio-label">
+              <input type="radio" name="register-role" value="vendor">
+              <div class="role-radio-box">
+                <i class="fa-solid fa-user-tie"></i>
+                <span>Vendor</span>
+                <small>Own store, sell inventory</small>
+              </div>
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+        <p class="modal-switch-text">Already have an account? <a href="#" onclick="app.switchModal('register-modal', 'login-modal')">Log In</a></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: PRODUCT DETAILS & REVIEWS -->
+  <div id="product-detail-modal" class="modal-wrapper modal-large">
+    <div class="modal-backdrop" onclick="app.closeModal('product-detail-modal')"></div>
+    <div class="modal-content card">
+      <button class="close-modal-btn" onclick="app.closeModal('product-detail-modal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="product-modal-grid" id="product-detail-content">
+        <!-- Dynamic product details loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD/EDIT PRODUCT (Vendor) -->
+  <div id="product-form-modal" class="modal-wrapper">
+    <div class="modal-backdrop" onclick="app.closeModal('product-form-modal')"></div>
+    <div class="modal-content card">
+      <div class="modal-header">
+        <h2 id="product-modal-title">Add New Product</h2>
+        <button class="close-modal-btn" onclick="app.closeModal('product-form-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="product-crud-form" onsubmit="vendor.handleProductSubmit(event)">
+        <input type="hidden" id="crud-product-id">
+        <div class="form-group">
+          <label for="crud-product-name">Product Name *</label>
+          <input type="text" id="crud-product-name" class="form-control" required placeholder="E.g. Wireless Noise Canceling Headphones">
+        </div>
+        <div class="form-group">
+          <label for="crud-product-category">Category *</label>
+          <select id="crud-product-category" class="form-control" required>
+            <option value="Electronics">Electronics</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Home & Living">Home & Living</option>
+            <option value="Fitness & Outdoors">Fitness & Outdoors</option>
+            <option value="Beauty & Personal">Beauty & Personal</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="crud-product-price">Price ($) *</label>
+            <input type="number" step="0.01" min="0.01" id="crud-product-price" class="form-control" required placeholder="99.99">
+          </div>
+          <div class="form-group col">
+            <label for="crud-product-stock">Stock Units *</label>
+            <input type="number" min="0" id="crud-product-stock" class="form-control" required placeholder="50">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="crud-product-description">Description</label>
+          <textarea id="crud-product-description" class="form-control" rows="3" placeholder="Provide product features, sizing details, etc."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="crud-product-image">Product Image URL</label>
+          <input type="url" id="crud-product-image" class="form-control" placeholder="https://example.com/product.jpg">
+          <span class="input-tip">Leave blank to use a modern geometric placeholder matching the category.</span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="product-form-submit-btn">Save Product</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CHECKOUT (Customer) -->
+  <div id="checkout-modal" class="modal-wrapper">
+    <div class="modal-backdrop" onclick="app.closeModal('checkout-modal')"></div>
+    <div class="modal-content card">
+      <div class="modal-header">
+        <h2>Fulfill Purchase</h2>
+        <button class="close-modal-btn" onclick="app.closeModal('checkout-modal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="checkout-form" onsubmit="customer.processCheckout(event)">
+        <div class="order-summary-box mb-4">
+          <h4>Order Summary</h4>
+          <div class="order-items-preview" id="checkout-items-preview"></div>
+          <hr>
+          <div class="order-total-preview">
+            <span>Total amount to pay</span>
+            <strong id="checkout-total-price">$0.00</strong>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="checkout-address">Shipping Address *</label>
+          <textarea id="checkout-address" class="form-control" rows="3" required placeholder="123 Main St, Apt 4B, New York, NY 10001"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Payment Method *</label>
+          <div class="payment-selector-group">
+            <label class="payment-radio-label">
+              <input type="radio" name="payment-method" value="Credit Card" checked>
+              <div class="payment-box"><i class="fa-solid fa-credit-card"></i> Credit Card</div>
+            </label>
+            <label class="payment-radio-label">
+              <input type="radio" name="payment-method" value="PayPal">
+              <div class="payment-box"><i class="fa-brands fa-paypal"></i> PayPal</div>
+            </label>
+            <label class="payment-radio-label">
+              <input type="radio" name="payment-method" value="Cash on Delivery">
+              <div class="payment-box"><i class="fa-solid fa-truck-ramp-box"></i> COD</div>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block mt-4"><i class="fa-solid fa-shield-halved"></i> Authorize & Order</button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <p>&copy; 2026 ApexMarket. Full-stack E-Commerce Platform Project.</p>
+      <div class="footer-links">
+        <a href="#" onclick="app.navigateTo('browse')">Browse</a>
+        <span>&middot;</span>
+        <a href="#" onclick="app.openModal('login-modal')">Admin Portal</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Frontend Javascript Files -->
+  <script src="/js/api.js"></script>
+  <script src="/js/customer.js"></script>
+  <script src="/js/vendor.js"></script>
+  <script src="/js/admin.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
