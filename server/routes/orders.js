@@ -37,7 +37,7 @@ router.post('/', authMiddleware, requireRole(['customer']), async (req, res) => 
       totalPrice += product.price * item.quantity;
     }
 
-    // Process order in serialized transaction-like sequence
+    // Process order in serialized transaction-like sequence manner
     db.serialize(() => {
       db.run('BEGIN TRANSACTION');
 
