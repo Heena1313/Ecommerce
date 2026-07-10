@@ -1,55 +1,70 @@
-# Apex E-Commerce Platform
+# Apex E-Commerce 🛍️
 
-A full-stack Node.js e-commerce application supporting multi-role users: **admin**, **vendor**, and **customer**.
+A modern multi-role marketplace built with **Node.js**, **Express**, and **MongoDB**. The platform supports three user personas: **admin**, **vendor**, and **customer**.
 
-## Features
+## 🚀 Features
 
-- Role-based authentication and authorization
-- Admin dashboard for vendor/customer management
-- Vendor product management and store administration
-- Customer browsing, shopping cart, checkout and order history
-- PayPal payment integration
-- JWT-based authentication with bcrypt password hashing
-- MongoDB persistence via Mongoose
-- Simple email helper for password reset flows
+### 👤 For Administrators
 
-## Project Structure
+- **Admin Dashboard:** Review vendors, customers, and approval queue.
+- **Vendor Management:** Approve, suspend, and manage vendor account status.
+- **Customer Listing:** Browse registered customers and their account status.
+- **Role-based API:** Secure admin endpoints using JWT and middleware checks.
 
-- `server/` – Express backend and API routes
-  - `config/` – environment and database setup
-  - `middleware/` – auth and role checks
-  - `models/` – Mongoose schemas
-  - `routes/` – API endpoints for auth, admin, orders, products, reviews, stores
-  - `scripts/seed.js` – seed data including default admin/vendor/customer
-  - `utils/` – email utility helpers
-- `public/` – front-end assets
-  - `js/` – client-side logic for app, admin, vendor, customer views
-  - `css/` – styles
-  - `index.html` – app entry point
-- `docker-compose.yml` – container setup (if configured)
+### 🏬 For Vendors
 
-## Prerequisites
+- **Store Management:** Each vendor has a dedicated store and product listing.
+- **Product CRUD:** Add, edit, and manage inventory for products.
+- **Order Tracking:** View vendor-specific order details and customer purchase activity.
+- **Pending Approval:** Vendor accounts are created pending admin approval for security.
 
-- Node.js 18+ / 20+
-- npm
-- MongoDB running locally or remote
+### 👥 For Customers
 
-## Installation
+- **Product Browsing:** Search and view products across active vendor stores.
+- **Checkout Flow:** Create orders and process payments via PayPal.
+- **Order History:** Track order status and view purchase history.
+- **Reviews:** Leave reviews for purchased products.
 
-1. Clone the repository
+## 🛠 Tech Stack
+
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB with Mongoose
+- **Authentication:** JWT, bcryptjs
+- **Payments:** PayPal integration
+- **Frontend:** HTML5, CSS3, JavaScript
+- **Utilities:** dotenv, cors, nodemailer
+
+## 📁 Project Structure
+
+- `server/`
+  - `config/` — app and MongoDB configuration
+  - `middleware/` — authentication and role authorization
+  - `models/` — user, store, product, order, review schemas
+  - `routes/` — API route handlers for auth, admin, stores, products, orders, reviews
+  - `scripts/seed.js` — seed script for default users and sample data
+  - `utils/` — email helper for password reset workflows
+- `public/` — frontend assets
+  - `js/` — client-side application logic
+  - `css/` — styles
+  - `index.html` — single-page entry point
+- `docker-compose.yml` — Docker configuration if using containers
+
+## 📦 Installation
+
+1. Clone the repository:
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/your-username/project03.git
 cd project03
 ```
 
-2. Install dependencies
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-3. Create a `.env` file in the project root and set values:
+3. Create a `.env` file in the project root with:
 
 ```env
 PORT=3000
@@ -62,53 +77,41 @@ SMTP_PASS=your_smtp_password
 CLIENT_RESET_URL=http://localhost:3000/reset-password
 ```
 
-4. Seed the database (creates default admin, vendor, and customer)
+4. Seed the database:
 
 ```bash
 node server/scripts/seed.js
 ```
 
-## Running the App
+5. Start the server:
 
 ```bash
 npm start
 ```
 
-Then open:
+Open the app at:
 
 - `http://localhost:3000`
 
-## API Endpoints
+## 🔑 Default Accounts
 
-- `POST /api/auth/register` — Register customer or vendor
-- `POST /api/auth/login` — Login and receive JWT
-- `GET /api/auth/me` — Get current user profile
-- `POST /api/auth/forgot-password` — Request password reset
-- `POST /api/auth/reset-password` — Reset password with token
-- `GET /api/admin/vendors` — Admin only: list vendors
-- `GET /api/admin/customers` — Admin only: list customers
-- `PUT /api/admin/vendors/:id/status` — Admin only: approve/suspend vendor
-- `GET /api/products` — Browse products
-- `POST /api/orders` — Create order
+- **Admin:** `admin@apex.com` / `adminpassword`
+- **Vendor:** `vendor@apex.com` / `vendorpassword`
+- **Customer:** `customer@apex.com` / `customerpassword`
 
-## Default Seed Credentials
+## 🔧 Notes
 
-Use the seeded default admin account after running `node server/scripts/seed.js`:
+- Vendor signups are created with `pending_approval` status and require admin approval.
+- The frontend is served from `public/` while API routes are mounted under `/api/`.
+- Use `JWT_SECRET` to control token security and `MONGODB_URI` for the database connection.
 
-- Email: `admin@apex.com`
-- Password: `adminpassword`
+## 📝 Roadmap
 
-Also included by seed:
+- Add product search and category filtering
+- Improve admin analytics with charts and stats
+- Add order cancellation and refund flows
+- Implement file uploads for product images and vendor banners
 
-- Vendor: `vendor@apex.com` / `vendorpassword`
-- Customer: `customer@apex.com` / `customerpassword`
+## 📜 License
 
-## Notes
-
-- Vendor registration starts with `pending_approval` status and requires admin approval.
-- The app serves static frontend files from `public/` and exposes REST endpoints under `/api/`.
-- Modify `MONGODB_URI` and SMTP settings in `.env` for your environment.
-
-## License
-
-This project is released under the ISC License.
+ISC License.
