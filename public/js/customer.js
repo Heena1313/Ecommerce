@@ -1,5 +1,4 @@
 // Customer View Module
-
 const customer = {
   currentCategory: '',
   searchQuery: '',
