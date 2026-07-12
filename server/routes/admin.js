@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../db');
 const { authMiddleware, requireRole } = require('../middleware/authMiddleware');
 
-// Get all vendors list (Admin only)
+//Get all vendors list (Admin only)
 router.get('/vendors', authMiddleware, requireRole(['admin']), async (req, res) => {
   try {
     const vendors = await db.allAsync(`
